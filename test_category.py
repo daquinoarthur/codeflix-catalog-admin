@@ -5,7 +5,6 @@ from unittest.mock import patch
 from category import Category
 
 
-class TestCategory:
 class TestCategoryCreation:
     def test_category_name_is_required(self):
         with pytest.raises(
@@ -64,7 +63,6 @@ class TestCategoryCreation:
             Category("")
 
 
-class TestUpdateCategory:
 class TestCategoryUpdate:
     def test_update_category_with_name_and_description(self):
         category = Category("Filme")
@@ -97,6 +95,8 @@ class TestCategoryValidation:
                 Category("")
                 assert mock_validate.called
                 assert mock_validate.call_count == 1
+
+
 class TestCategoryActivation:
     def test_activate_inactive_category(self):
         category = Category("Filme", is_active=False)
@@ -135,3 +135,11 @@ class TestCategoryActivation:
         category = Category("Filme", is_active=False)
         category.deactivate()
         assert category.is_active is False
+
+
+class TestEquality:
+    def test_when_categories_have_the_same_id_they_are_considered_equal(self):
+        common_id = uuid.uuid4()
+        category_1 = Category("Filme", id=common_id)
+        category_2 = Category("Séries", id=common_id)
+        assert category_1 == category_2
