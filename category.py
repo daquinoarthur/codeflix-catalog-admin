@@ -14,8 +14,7 @@ class Category:
         self.description = description
         self.is_active = is_active
 
-        if len(self.name) > 255:
-            raise ValueError("name must have less than 256 characters")
+        self._validate()
 
     def __str__(self):
         is_active = "Yes" if self.is_active else "No"
@@ -27,3 +26,16 @@ class Category:
 
     def __repr__(self):
         return f"<Category: {self.name} - id: {self.id}>"
+
+    def update_category(self, name, description):
+        self.name = name
+        self.description = description
+
+        self._validate()
+
+    def _validate(self):
+        if len(self.name) > 255:
+            raise ValueError("'name' cannot be longer than 255 characters.")
+
+        if not self.name:
+            raise ValueError("'name' cannot be empty.")
