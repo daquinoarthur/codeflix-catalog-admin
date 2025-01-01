@@ -32,4 +32,4 @@ class CreateCategory:
         except ValueError as error:
             raise InvalidCategoryData(str(error))
         self.repository.save(category)
-        return category.id
+        return CreateCategoryResponse(category.id)
