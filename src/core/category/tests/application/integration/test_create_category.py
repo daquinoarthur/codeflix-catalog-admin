@@ -1,9 +1,12 @@
 from uuid import UUID
 
+import pytest
+
 from src.core.category.application.create_category import (
     CreateCategory,
     CreateCategoryRequest,
 )
+from src.core.category.application.exceptions import InvalidCategoryData
 from src.core.category.infra.in_memory_category_repository import (
     InMemoryCategoryRepository,
 )
@@ -31,3 +34,15 @@ class TestCreateCategory:
         assert persisted_category.name == "Filme"
         assert persisted_category.description == "Categoria para filmes"
         assert persisted_category.is_active
+
+    def test_create_category_with_invalid_data(self):
+        with pytest.raises(InvalidCategoryData, match="'name' cannot be empty"):
+            repository = InMemoryCategoryRepository()
+            use_case = CreateCategory(repository)
+            request = CreateCategoryRequest(
+                name="",
+                description="",
+                is_active=True,
+            )
+
+            use_case.execute(request)
