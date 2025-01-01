@@ -6,6 +6,7 @@ from category import Category
 
 
 class TestCategory:
+class TestCategoryCreation:
     def test_category_name_is_required(self):
         with pytest.raises(
             TypeError, match="missing 1 required positional argument: 'name'"
@@ -64,6 +65,7 @@ class TestCategory:
 
 
 class TestUpdateCategory:
+class TestCategoryUpdate:
     def test_update_category_with_name_and_description(self):
         category = Category("Filme")
         category.update_category(name="Séries", description="Séries em geral")
@@ -95,3 +97,41 @@ class TestCategoryValidation:
                 Category("")
                 assert mock_validate.called
                 assert mock_validate.call_count == 1
+class TestCategoryActivation:
+    def test_activate_inactive_category(self):
+        category = Category("Filme", is_active=False)
+        category.is_active = False
+        category.activate()
+        assert category.is_active is True
+
+    def test_activate_active_category(self):
+        """
+        This is a test to show that the 'activate' method is working
+        when the category is already active. The method should not
+        raise any exceptions and the 'is_active' attribute should
+        remain True. This is called a "happy path" test or a "success"
+        test case.
+
+        - 'is_active' is True by default when not passing the argument
+        to the 'Category' constructor
+        """
+        category = Category("Filme")
+        category.activate()
+        assert category.is_active is True
+
+    def test_deactivate_active_category(self):
+        category = Category("File")
+        category.deactivate()
+        assert category.is_active is False
+
+    def test_deactivate_inactive_category(self):
+        """
+        This is a test to show that the 'deactivate' method is working
+        when the category is already inactive. The method should not
+        raise any exceptions and the 'is_active' attribute should
+        remain False. This is called a "happy path" test or a "success"
+        test case.
+        """
+        category = Category("Filme", is_active=False)
+        category.deactivate()
+        assert category.is_active is False

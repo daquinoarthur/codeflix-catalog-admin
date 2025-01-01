@@ -39,3 +39,11 @@ class Category:
 
         if not self.name:
             raise ValueError("'name' cannot be empty.")
+    def activate(self):
+        self.is_active = True
+
+        self._validate()
+    def deactivate(self):
+        self.is_active = False
+
+        self._validate()
