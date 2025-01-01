@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from category import Category
+from src.core.category.domain.category import Category
 
 
 class TestCategoryCreation:
@@ -86,7 +86,9 @@ class TestCategoryUpdate:
 
 class TestCategoryValidation:
     def test_private_validate_method_is_working(self):
-        with patch("category.Category._validate") as mock_validate:
+        with patch(
+            "src.core.category.domain.category.Category._validate"
+        ) as mock_validate:
             mock_validate.side_effect = ValueError(
                 "'name' cannot be longer than 255 characters"
             )
