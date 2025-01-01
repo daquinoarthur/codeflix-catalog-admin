@@ -20,7 +20,9 @@ class TestCreateCategory:
             description="Categoria para filmes",
             is_active=True,
         )
+
         response = use_case.execute(request)
+
         assert response.id is not None
         assert isinstance(response.id, UUID)
         assert repository.save.called
@@ -34,5 +36,7 @@ class TestCreateCategory:
                 description="Categoria para filmes",
                 is_active=True,
             )
+
             use_case.execute(request)
+
             assert repository.save.called

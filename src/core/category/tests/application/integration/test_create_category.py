@@ -18,11 +18,15 @@ class TestCreateCategory:
             description="Categoria para filmes",
             is_active=True,
         )
+
         response = use_case.execute(request)
+
         assert response is not None
         assert isinstance(response.id, UUID)
         assert len(repository.categories) == 1
+
         persisted_category = repository.categories[0]
+
         assert persisted_category.id == response.id
         assert persisted_category.name == "Filme"
         assert persisted_category.description == "Categoria para filmes"

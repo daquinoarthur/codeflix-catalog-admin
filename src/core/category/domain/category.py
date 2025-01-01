@@ -14,6 +14,7 @@ class Category:
 
     def __str__(self):
         is_active = "Yes" if self.is_active else "No"
+
         return (
             f"Category name: {self.name}"
             f" - Category description: {self.description}"
@@ -26,6 +27,7 @@ class Category:
     def __eq__(self, other):
         if not isinstance(other, Category):
             return False
+
         return self.id == other.id
 
     def update_category(self, name, description):
