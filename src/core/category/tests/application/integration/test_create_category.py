@@ -2,11 +2,13 @@ from uuid import UUID
 
 import pytest
 
-from src.core.category.application.create_category import (
+from src.core.category.application.use_cases.create_category import (
     CreateCategory,
     CreateCategoryRequest,
 )
-from src.core.category.application.exceptions import InvalidCategoryData
+from src.core.category.application.use_cases.exceptions import (
+    InvalidCategoryDataException,
+)
 from src.core.category.infra.in_memory_category_repository import (
     InMemoryCategoryRepository,
 )
@@ -36,7 +38,9 @@ class TestCreateCategory:
         assert persisted_category.is_active
 
     def test_create_category_with_invalid_data(self):
-        with pytest.raises(InvalidCategoryData, match="'name' cannot be empty"):
+        with pytest.raises(
+            InvalidCategoryDataException, match="'name' cannot be empty"
+        ):
             repository = InMemoryCategoryRepository()
             use_case = CreateCategory(repository)
             request = CreateCategoryRequest(
