@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from uuid import UUID
 
 from src.core.category.application.category_repository import CategoryRepository
-from src.core.category.application.use_cases.exceptions import CategoryNotFoundException
+from src.core.category.application.use_cases.exceptions import CategoryNotFoundException, InvalidCategoryDataException
 
 
 @dataclass
@@ -38,7 +38,10 @@ class UpdateCategory:
             request.description if request.description else category.description
         )
 
-        category.update_category(category_name, category_description)
+        try:
+            category.update_category(category_name, category_description)
+        except ValueError as error:
+            raise InvalidCategoryDataException(str(error))
 
         category.activate() if request.is_active else category.deactivate()
 
