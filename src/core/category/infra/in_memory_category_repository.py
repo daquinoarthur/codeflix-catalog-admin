@@ -28,3 +28,6 @@ class InMemoryCategoryRepository(CategoryRepository):
         self.categories.append(category)
 
         return category
+
+    def list(self) -> list[Category]:
+        return [category for category in self.categories]
