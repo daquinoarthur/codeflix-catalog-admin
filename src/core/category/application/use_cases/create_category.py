@@ -18,6 +18,9 @@ class CreateCategoryRequest:
 @dataclass
 class CreateCategoryResponse:
     id: UUID
+    name: str
+    description: str
+    is_active: bool
 
 
 class CreateCategory:
@@ -26,7 +29,7 @@ class CreateCategory:
 
     def execute(self, request: CreateCategoryRequest) -> CreateCategoryResponse:
         try:
-            category = Category(
+            created_category = Category(
                 name=request.name,
                 description=request.description,
                 is_active=request.is_active,
@@ -34,6 +37,11 @@ class CreateCategory:
         except ValueError as error:
             raise InvalidCategoryDataException(str(error))
 
-        self.repository.save(category)
+        created_category = self.repository.save(created_category)
 
-        return CreateCategoryResponse(category.id)
+        return CreateCategoryResponse(
+            id=created_category.id,
+            name=created_category.name,
+            description=created_category.description,
+            is_active=created_category.is_active,
+        )

@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock
+import uuid
+from unittest.mock import create_autospec
 from uuid import UUID
 
 import pytest
@@ -11,13 +12,20 @@ from src.core.category.application.use_cases.create_category import (
 from src.core.category.application.use_cases.exceptions import (
     InvalidCategoryDataException,
 )
+from src.core.category.domain.category import Category
 
 
 class TestCreateCategory:
     def test_create_category_with_valid_data(self):
-        repository = MagicMock(CategoryRepository)
+        repository = create_autospec(CategoryRepository)
         use_case = CreateCategory(repository)
         request = CreateCategoryRequest(
+            name="Filme",
+            description="Categoria para filmes",
+            is_active=True,
+        )
+        repository.save.return_value = Category(
+            id=uuid.uuid4(),
             name="Filme",
             description="Categoria para filmes",
             is_active=True,
@@ -33,7 +41,7 @@ class TestCreateCategory:
         with pytest.raises(
             InvalidCategoryDataException, match="'name' cannot be empty"
         ):
-            repository = MagicMock(CategoryRepository)
+            repository = create_autospec(CategoryRepository)
             use_case = CreateCategory(repository)
             request = CreateCategoryRequest(
                 name="",
