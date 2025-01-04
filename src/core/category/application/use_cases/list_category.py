@@ -5,7 +5,7 @@ from src.core.category.domain.category_repository import CategoryRepository
 
 
 @dataclass
-class ListCategoryRequest:
+class ListCategoryInput:
     pass
 
 
@@ -18,7 +18,7 @@ class CategoryOutput:
 
 
 @dataclass
-class ListCategoryResponse:
+class ListCategoryOutput:
     data: list[CategoryOutput]
 
 
@@ -26,10 +26,10 @@ class ListCategory:
     def __init__(self, repository: CategoryRepository):
         self.repository = repository
 
-    def execute(self, request: ListCategoryRequest) -> ListCategoryResponse:
+    def execute(self, request: ListCategoryInput) -> ListCategoryOutput:
         categories = self.repository.list()
 
-        return ListCategoryResponse(
+        return ListCategoryOutput(
             data=[
                 CategoryOutput(
                     id=category.id,

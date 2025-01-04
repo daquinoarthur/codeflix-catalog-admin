@@ -6,8 +6,8 @@ import pytest
 from src.core.category.application.use_cases.exceptions import CategoryNotFoundException
 from src.core.category.application.use_cases.update_category import (
     UpdateCategory,
-    UpdateCategoryRequest,
-    UpdateCategoryResponse,
+    UpdateCategoryInput,
+    UpdateCategoryOutput,
 )
 from src.core.category.domain.category import Category
 from src.core.category.domain.category_repository import CategoryRepository
@@ -23,11 +23,11 @@ class TestUpdateCategory:
         repository = create_autospec(CategoryRepository)
         repository.get_by_id.return_value = category
         use_case = UpdateCategory(repository)
-        request = UpdateCategoryRequest(
+        request = UpdateCategoryInput(
             id=category.id,
             name="Filme updated",
         )
-        repository.update.return_value = UpdateCategoryResponse(
+        repository.update.return_value = UpdateCategoryOutput(
             id=category.id,
             name="Filme updated",
             description=category.description,
@@ -36,7 +36,7 @@ class TestUpdateCategory:
 
         response = use_case.execute(request)
 
-        assert response == UpdateCategoryResponse(
+        assert response == UpdateCategoryOutput(
             id=category.id,
             name="Filme updated",
             description=category.description,
@@ -53,11 +53,11 @@ class TestUpdateCategory:
         repository = create_autospec(CategoryRepository)
         repository.get_by_id.return_value = category
         use_case = UpdateCategory(repository)
-        request = UpdateCategoryRequest(
+        request = UpdateCategoryInput(
             id=category.id,
             description="Categoria de filmes updated",
         )
-        repository.update.return_value = UpdateCategoryResponse(
+        repository.update.return_value = UpdateCategoryOutput(
             id=category.id,
             name=category.name,
             description="Categoria de filmes updated",
@@ -66,7 +66,7 @@ class TestUpdateCategory:
 
         response = use_case.execute(request)
 
-        assert response == UpdateCategoryResponse(
+        assert response == UpdateCategoryOutput(
             id=category.id,
             name=category.name,
             description="Categoria de filmes updated",
@@ -83,11 +83,11 @@ class TestUpdateCategory:
         repository = create_autospec(CategoryRepository)
         repository.get_by_id.return_value = category
         use_case = UpdateCategory(repository)
-        request = UpdateCategoryRequest(
+        request = UpdateCategoryInput(
             id=category.id,
             is_active=True,
         )
-        repository.update.return_value = UpdateCategoryResponse(
+        repository.update.return_value = UpdateCategoryOutput(
             id=category.id,
             name=category.name,
             description=category.description,
@@ -96,7 +96,7 @@ class TestUpdateCategory:
 
         response = use_case.execute(request)
 
-        assert response == UpdateCategoryResponse(
+        assert response == UpdateCategoryOutput(
             id=category.id,
             name=category.name,
             description=category.description,
@@ -113,11 +113,11 @@ class TestUpdateCategory:
         repository = create_autospec(CategoryRepository)
         repository.get_by_id.return_value = category
         use_case = UpdateCategory(repository)
-        request = UpdateCategoryRequest(
+        request = UpdateCategoryInput(
             id=category.id,
             is_active=False,
         )
-        repository.update.return_value = UpdateCategoryResponse(
+        repository.update.return_value = UpdateCategoryOutput(
             id=category.id,
             name=category.name,
             description=category.description,
@@ -126,7 +126,7 @@ class TestUpdateCategory:
 
         response = use_case.execute(request)
 
-        assert response == UpdateCategoryResponse(
+        assert response == UpdateCategoryOutput(
             id=category.id,
             name=category.name,
             description=category.description,
@@ -138,7 +138,7 @@ class TestUpdateCategory:
         repository = create_autospec(CategoryRepository)
         repository.get_by_id.return_value = None
         use_case = UpdateCategory(repository)
-        request = UpdateCategoryRequest(
+        request = UpdateCategoryInput(
             id=uuid.uuid4(),
             name="Filme updated",
         )

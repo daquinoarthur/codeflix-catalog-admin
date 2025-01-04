@@ -2,16 +2,23 @@ from uuid import UUID
 
 import pytest
 
-from src.core.category.application.use_cases.create_category import CreateCategory, CreateCategoryRequest
-from src.core.category.application.use_cases.exceptions import InvalidCategoryDataException
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
+from src.core.category.application.use_cases.create_category import (
+    CreateCategory,
+    CreateCategoryInput,
+)
+from src.core.category.application.use_cases.exceptions import (
+    InvalidCategoryDataException,
+)
+from src.core.category.infra.in_memory_category_repository import (
+    InMemoryCategoryRepository,
+)
 
 
 class TestCreateCategory:
     def test_create_category_with_valid_data(self):
         repository = InMemoryCategoryRepository()
         use_case = CreateCategory(repository)
-        request = CreateCategoryRequest(
+        request = CreateCategoryInput(
             name="Filme",
             description="Categoria para filmes",
             is_active=True,
@@ -36,7 +43,7 @@ class TestCreateCategory:
         ):
             repository = InMemoryCategoryRepository()
             use_case = CreateCategory(repository)
-            request = CreateCategoryRequest(
+            request = CreateCategoryInput(
                 name="",
                 description="",
                 is_active=True,

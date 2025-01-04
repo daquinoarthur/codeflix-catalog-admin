@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.core.category.application.use_cases.exceptions import CategoryNotFoundException, InvalidCategoryDataException
+from src.core.category.application.use_cases.exceptions import (
+    CategoryNotFoundException,
+    InvalidCategoryDataException,
+)
 from src.core.category.domain.category_repository import CategoryRepository
 
 
 @dataclass
-class UpdateCategoryRequest:
+class UpdateCategoryInput:
     id: UUID
     name: str | None = None
     description: str | None = None
@@ -14,7 +17,7 @@ class UpdateCategoryRequest:
 
 
 @dataclass
-class UpdateCategoryResponse:
+class UpdateCategoryOutput:
     id: UUID
     name: str
     description: str
@@ -25,7 +28,7 @@ class UpdateCategory:
     def __init__(self, repository: CategoryRepository):
         self.repository = repository
 
-    def execute(self, request: UpdateCategoryRequest) -> UpdateCategoryResponse:
+    def execute(self, request: UpdateCategoryInput) -> UpdateCategoryOutput:
         category = self.repository.get_by_id(request.id)
 
         if not category:
@@ -47,7 +50,7 @@ class UpdateCategory:
 
         self.repository.update(category)
 
-        return UpdateCategoryResponse(
+        return UpdateCategoryOutput(
             id=category.id,
             name=category.name,
             description=category.description,

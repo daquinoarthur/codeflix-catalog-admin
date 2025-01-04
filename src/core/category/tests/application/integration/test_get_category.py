@@ -3,7 +3,7 @@ import uuid
 import pytest
 
 from src.core.category.application.use_cases.exceptions import CategoryNotFoundException
-from src.core.category.application.use_cases.get_category import GetCategory, GetCategoryRequest, GetCategoryResponse
+from src.core.category.application.use_cases.get_category import GetCategory, GetCategoryInput, GetCategoryResponse
 from src.core.category.domain.category import Category
 from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
 
@@ -24,7 +24,7 @@ class TestGetCategory:
             categories=[category_filme, category_series]
         )
         use_case = GetCategory(repository)
-        request = GetCategoryRequest(id=category_filme.id)
+        request = GetCategoryInput(id=category_filme.id)
 
         response = use_case.execute(request)
 
@@ -50,7 +50,7 @@ class TestGetCategory:
             categories=[category_filme, category_series]
         )
         use_case = GetCategory(repository)
-        request = GetCategoryRequest(id=uuid.uuid4())
+        request = GetCategoryInput(id=uuid.uuid4())
 
         with pytest.raises(
             CategoryNotFoundException, match="Category with {request.id} not found."

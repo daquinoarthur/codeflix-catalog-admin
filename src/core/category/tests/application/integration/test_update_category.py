@@ -1,10 +1,12 @@
 from src.core.category.application.use_cases.update_category import (
     UpdateCategory,
-    UpdateCategoryRequest,
-    UpdateCategoryResponse,
+    UpdateCategoryInput,
+    UpdateCategoryOutput,
 )
 from src.core.category.domain.category import Category
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
+from src.core.category.infra.in_memory_category_repository import (
+    InMemoryCategoryRepository,
+)
 
 
 class TestUpdateCategory:
@@ -16,7 +18,7 @@ class TestUpdateCategory:
         repository = InMemoryCategoryRepository()
         repository.save(category)
         use_case = UpdateCategory(repository)
-        request = UpdateCategoryRequest(
+        request = UpdateCategoryInput(
             id=category.id,
             name="Category 1 Updated",
             description="Description 1 Updated",
@@ -24,7 +26,7 @@ class TestUpdateCategory:
 
         response = use_case.execute(request)
 
-        assert response == UpdateCategoryResponse(
+        assert response == UpdateCategoryOutput(
             id=category.id,
             name="Category 1 Updated",
             description="Description 1 Updated",
