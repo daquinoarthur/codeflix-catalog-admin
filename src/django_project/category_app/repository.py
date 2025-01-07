@@ -27,15 +27,12 @@ class DjangoORMCategoryRepository(CategoryRepository):
 
     def update(self, category: Category) -> Category:
         category_from_db = self.get_by_id(category.id)
-
         if category_from_db is None:
             raise ValueError("Category not found")
-
         category_from_db.name = category.name
         category_from_db.description = category.description
         category_from_db.is_active = category.is_active
         category_from_db.save()
-
         return category_from_db
 
     def delete(self, id: UUID) -> None:

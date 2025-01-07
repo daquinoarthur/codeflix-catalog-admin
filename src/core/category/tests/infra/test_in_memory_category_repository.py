@@ -1,14 +1,14 @@
 from src.core.category.domain.category import Category
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
+from src.core.category.infra.in_memory_category_repository import (
+    InMemoryCategoryRepository,
+)
 
 
 class TestSaveCategory:
     def test_can_save_category(self):
         category = Category(name="test")
         repository = InMemoryCategoryRepository()
-
         repository.save(category)
-
         assert len(repository.categories) == 1
         assert repository.categories[0] == category
 
@@ -20,9 +20,7 @@ class TestGetCategoryById:
         repository = InMemoryCategoryRepository(
             categories=[category_filme, category_serie]
         )
-
         category = repository.get_by_id(category_filme.id)
-
         if category:
             assert category == category_filme
             assert category.name == "Filme"
@@ -38,13 +36,9 @@ class TestDeleteCategory:
         repository = InMemoryCategoryRepository(
             categories=[category_filme, category_serie]
         )
-
         category = repository.get_by_id(category_filme.id)
-
         assert category is not None
         assert len(repository.categories) == 2
-
         repository.delete(category_filme.id)
-
         assert repository.get_by_id(category_filme.id) is None
         assert len(repository.categories) == 1

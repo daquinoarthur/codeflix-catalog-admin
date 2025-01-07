@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.core.category.application.use_cases.exceptions import (
-    InvalidCategoryDataException,
-)
+from src.core.category.application.use_cases.exceptions import InvalidCategoryDataException
 from src.core.category.domain.category import Category
 from src.core.category.domain.category_repository import CategoryRepository
 
@@ -36,9 +34,7 @@ class CreateCategory:
             )
         except ValueError as error:
             raise InvalidCategoryDataException(str(error))
-
         created_category = self.repository.save(created_category)
-
         return CreateCategoryOutput(
             id=created_category.id,
             name=created_category.name,

@@ -25,9 +25,7 @@ class TestGetCategory:
         )
         use_case = GetCategory(repository)
         request = GetCategoryInput(id=category_filme.id)
-
         response = use_case.execute(request)
-
         assert response == GetCategoryResponse(
             id=category_filme.id,
             name="Filme",
@@ -51,8 +49,7 @@ class TestGetCategory:
         )
         use_case = GetCategory(repository)
         request = GetCategoryInput(id=uuid.uuid4())
-
         with pytest.raises(
-            CategoryNotFoundException, match="Category with {request.id} not found."
+            CategoryNotFoundException, match=f"Category with {request.id} not found."
         ):
             use_case.execute(request)

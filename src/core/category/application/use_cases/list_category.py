@@ -28,7 +28,6 @@ class ListCategory:
 
     def execute(self, request: ListCategoryInput) -> ListCategoryOutput:
         categories = self.repository.list()
-
         return ListCategoryOutput(
             data=[
                 CategoryOutput(

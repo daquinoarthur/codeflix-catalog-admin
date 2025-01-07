@@ -33,9 +33,7 @@ class TestUpdateCategory:
             description=category.description,
             is_active=category.is_active,
         )
-
         response = use_case.execute(request)
-
         assert response == UpdateCategoryOutput(
             id=category.id,
             name="Filme updated",
@@ -63,9 +61,7 @@ class TestUpdateCategory:
             description="Categoria de filmes updated",
             is_active=category.is_active,
         )
-
         response = use_case.execute(request)
-
         assert response == UpdateCategoryOutput(
             id=category.id,
             name=category.name,
@@ -93,9 +89,7 @@ class TestUpdateCategory:
             description=category.description,
             is_active=True,
         )
-
         response = use_case.execute(request)
-
         assert response == UpdateCategoryOutput(
             id=category.id,
             name=category.name,
@@ -123,9 +117,7 @@ class TestUpdateCategory:
             description=category.description,
             is_active=False,
         )
-
         response = use_case.execute(request)
-
         assert response == UpdateCategoryOutput(
             id=category.id,
             name=category.name,
@@ -142,7 +134,6 @@ class TestUpdateCategory:
             id=uuid.uuid4(),
             name="Filme updated",
         )
-
         with pytest.raises(
             CategoryNotFoundException,
             match="Can not update category with id: {request.id}. Category not found.",

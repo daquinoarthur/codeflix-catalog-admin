@@ -16,9 +16,7 @@ class TestGetCategory:
         repository.get_by_id.return_value = category
         use_case = GetCategory(repository)
         request = GetCategoryInput(id=category.id)
-
         response = use_case.execute(request)
-
         assert response == GetCategoryResponse(
             id=category.id,
             name="Filme",

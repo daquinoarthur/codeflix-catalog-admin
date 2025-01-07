@@ -10,7 +10,6 @@ class InMemoryCategoryRepository(CategoryRepository):
 
     def save(self, category: Category) -> Category:
         self.categories.append(category)
-
         return category
 
     def get_by_id(self, id: UUID) -> Category | None:
@@ -26,7 +25,6 @@ class InMemoryCategoryRepository(CategoryRepository):
     def update(self, category: Category) -> Category:
         self.categories.remove(category)
         self.categories.append(category)
-
         return category
 
     def list(self) -> list[Category]:

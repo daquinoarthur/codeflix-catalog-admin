@@ -24,10 +24,8 @@ class GetCategory:
 
     def execute(self, request: GetCategoryInput) -> GetCategoryResponse:
         category = self.repository.get_by_id(request.id)
-
         if category is None:
-            raise CategoryNotFoundException("Category with {request.id} not found.")
-
+            raise CategoryNotFoundException(f"Category with {request.id} not found.")
         return GetCategoryResponse(
             id=category.id,
             name=category.name,

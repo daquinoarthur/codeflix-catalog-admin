@@ -5,9 +5,7 @@ from src.core.category.application.use_cases.list_category import (
     ListCategoryOutput,
 )
 from src.core.category.domain.category import Category
-from src.core.category.infra.in_memory_category_repository import (
-    InMemoryCategoryRepository,
-)
+from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
 
 
 class TestListCategory:
@@ -15,9 +13,7 @@ class TestListCategory:
         repository = InMemoryCategoryRepository()
         use_case = ListCategory(repository)
         request = ListCategoryInput()
-
         response = use_case.execute(request)
-
         if response:
             assert response == ListCategoryOutput(data=[])
 
@@ -35,9 +31,7 @@ class TestListCategory:
         repository.save(category_serie)
         use_case = ListCategory(repository)
         request = ListCategoryInput()
-
         response = use_case.execute(request)
-
         if response:
             assert response == ListCategoryOutput(
                 data=[

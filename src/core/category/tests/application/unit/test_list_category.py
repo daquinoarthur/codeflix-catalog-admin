@@ -17,9 +17,7 @@ class TestListCategory:
         repository.list.return_value = []
         use_case = ListCategory(repository)
         request = ListCategoryInput()
-
         response = use_case.execute(request)
-
         assert response == ListCategoryOutput(data=[])
 
     def test_when_categories_in_database_return_list(self):
@@ -37,9 +35,7 @@ class TestListCategory:
         repository.list.return_value = [category_filme, category_serie]
         use_case = ListCategory(repository)
         request = ListCategoryInput()
-
         response = use_case.execute(request)
-
         expected_response = ListCategoryOutput(
             data=[
                 CategoryOutput(
@@ -56,7 +52,6 @@ class TestListCategory:
                 ),
             ]
         )
-
         if response:
             assert response == expected_response
             assert len(response.data) == 2
