@@ -18,6 +18,6 @@ class DeleteCategory:
         category = self.repository.get_by_id(request.id)
         if category is None:
             raise CategoryNotFoundException(
-                f"Could not delete Category with id: {request.id}."
+                f"Can not delete Category with id: {request.id}. Category not found."
             )
         self.repository.delete(category.id)

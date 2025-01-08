@@ -136,6 +136,6 @@ class TestUpdateCategory:
         )
         with pytest.raises(
             CategoryNotFoundException,
-            match="Can not update category with id: {request.id}. Category not found.",
+            match=f"Can not update category with id: {request.id}. Category not found.",
         ):
             use_case.execute(request)

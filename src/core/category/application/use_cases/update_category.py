@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.core.category.application.use_cases.exceptions import CategoryNotFoundException, InvalidCategoryDataException
+from src.core.category.application.use_cases.exceptions import (
+    CategoryNotFoundException,
+    InvalidCategoryDataException,
+)
 from src.core.category.domain.category_repository import CategoryRepository
 
 
@@ -29,7 +32,7 @@ class UpdateCategory:
         category = self.repository.get_by_id(request.id)
         if not category:
             raise CategoryNotFoundException(
-                "Can not update category with id: {request.id}. Category not found."
+                f"Can not update category with id: {request.id}. Category not found."
             )
         category_name = request.name if request.name else category.name
         category_description = (

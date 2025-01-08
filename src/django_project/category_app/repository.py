@@ -6,8 +6,8 @@ from src.core.category.domain.category_repository import CategoryRepository
 
 
 class DjangoORMCategoryRepository(CategoryRepository):
-    def __init__(self, category_model: CategoryModel = CategoryModel):
-        self.category_model = category_model
+    def __init__(self, category_model: CategoryModel | None = None):
+        self.category_model = category_model or CategoryModel
 
     def save(self, category: Category) -> Category:
         self.category_model.objects.create(
@@ -21,7 +21,12 @@ class DjangoORMCategoryRepository(CategoryRepository):
     def get_by_id(self, id: UUID) -> Category | None:
         try:
             category = self.category_model.objects.get(id=id)
-            return category
+            return Category(
+                id=category.id,
+                name=category.name,
+                description=category.description,
+                is_active=category.is_active,
+            )
         except self.category_model.DoesNotExist:
             return None
 
@@ -29,11 +34,13 @@ class DjangoORMCategoryRepository(CategoryRepository):
         category_from_db = self.get_by_id(category.id)
         if category_from_db is None:
             raise ValueError("Category not found")
-        category_from_db.name = category.name
-        category_from_db.description = category.description
-        category_from_db.is_active = category.is_active
-        category_from_db.save()
-        return category_from_db
+        self.category_model.objects.filter(id=category.id).update(
+            name=category.name,
+            description=category.description,
+            is_active=category.is_active,
+        )
+        updated_category = self.get_by_id(category.id)
+        return updated_category
 
     def delete(self, id: UUID) -> None:
         self.category_model.objects.filter(id=id).delete()

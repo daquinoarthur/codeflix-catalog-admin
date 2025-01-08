@@ -211,15 +211,15 @@ class TestUpdateCategoryAPI(CommonTestFixtures):
         )
         category_path = f"/api/categories/{category.id}/"
         payload = {
-            "name": "Movies",
-            "description": "Movie description",
+            "name": "Movies updated",
+            "description": "Movie description updated",
         }
         response = client.put(path=category_path, data=payload, format="json")
         expected_response = {
             "data": {
                 "id": str(category.id),
-                "name": "Movies",
-                "description": "Movie description",
+                "name": "Movies updated",
+                "description": "Movie description updated",
                 "is_active": True,
             }
         }
@@ -238,6 +238,49 @@ class TestUpdateCategoryAPI(CommonTestFixtures):
         }
         response = client.put(path=category_path, data=payload, format="json")
         assert response.data == {
-            "detail": f"Category with {non_existing_category_id} not found."
+            "detail": f"Can not update category with id: {non_existing_category_id}. Category not found."
+        }
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+class TestDeleteCategoryAPI(CommonTestFixtures):
+    def test_delete_category_when_id_is_not_a_valid_uuid(self, client: APIClient):
+        category_path = "/api/categories/invalid-uuid/"
+        response = client.delete(path=category_path)
+        expected_response = {
+            "id": [ErrorDetail(string="Must be a valid UUID.", code="invalid")]
+        }
+        assert response.data == expected_response
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_delete_category_when_exists(
+        self,
+        client: APIClient,
+        create_category,
+        category_repository,
+    ):
+        category = create_category(
+            name="Movies",
+            description="Movies category",
+        )
+        category_path = f"/api/categories/{category.id}/"
+        response = client.delete(path=category_path)
+        deleted_category = category_repository.get_by_id(category.id)
+        assert deleted_category is None
+        assert category_repository.list() == []
+        assert response.data == {
+            "detail": f"Category with id {category.id} deleted successfully."
+        }
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_return_404_when_category_not_exists(
+        self,
+        client: APIClient,
+    ):
+        non_existing_category_id = uuid.uuid4()
+        category_path = f"/api/categories/{non_existing_category_id}/"
+        response = client.delete(path=category_path)
+        assert response.data == {
+            "detail": f"Can not delete Category with id: {non_existing_category_id}. Category not found."
         }
         assert response.status_code == status.HTTP_404_NOT_FOUND

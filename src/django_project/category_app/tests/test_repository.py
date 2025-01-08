@@ -13,11 +13,8 @@ class TestSaveCategory:
             description="Movie description",
         )
         repository = DjangoORMCategoryRepository(category_model=CategoryModel)
-
         assert CategoryModel.objects.count() == 0
-
         response = repository.save(category)
-
         assert CategoryModel.objects.count() == 1
         assert response == category
         assert response.id == category.id
@@ -36,17 +33,13 @@ class TestSaveCategory:
             description="Serie description",
         )
         repository = DjangoORMCategoryRepository(category_model=CategoryModel)
-
         categories = repository.list()
-
         assert len(categories) == 2
-
         category_filme_from_db = categories[0]
         assert category_filme_from_db.id == category_filme.id
         assert category_filme_from_db.name == category_filme.name
         assert category_filme_from_db.description == category_filme.description
         assert category_filme_from_db.is_active == category_filme.is_active
-
         category_serie_from_db = categories[1]
         assert category_serie_from_db.id == category_serie.id
         assert category_serie_from_db.name == category_serie.name
@@ -60,9 +53,7 @@ class TestSaveCategory:
             description="Filme description",
         )
         repository = DjangoORMCategoryRepository(category_model=CategoryModel)
-
         category = repository.get_by_id(category_filme.id)
-
         if category:
             assert category.id == category_filme.id
             assert category.name == category_filme.name
@@ -76,15 +67,12 @@ class TestSaveCategory:
             description="Filme description",
         )
         repository = DjangoORMCategoryRepository(category_model=CategoryModel)
-
         category = Category(
             id=category_filme.id,
             name="Filme updated",
             description="Filme description updated",
         )
-
         response = repository.update(category)
-
         assert response.id == category.id
         assert response.name == category.name
         assert response.description == category.description
@@ -97,9 +85,6 @@ class TestSaveCategory:
             description="Filme description",
         )
         repository = DjangoORMCategoryRepository(category_model=CategoryModel)
-
         assert CategoryModel.objects.count() == 1
-
         repository.delete(category_filme.id)
-
         assert CategoryModel.objects.count() == 0
