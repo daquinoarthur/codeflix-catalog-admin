@@ -41,5 +41,16 @@ class UpdateCategoryResponseSerializer(serializers.Serializer):
     data = CategorySerializer(source="*")
 
 
+class PartialUpdateCategoryRequestSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField(max_length=255, required=False)
+    description = serializers.CharField(required=False)
+    is_active = serializers.BooleanField(required=False)
+
+
+class PartialUpdateCategoryResponseSerializer(serializers.Serializer):
+    data = CategorySerializer(source="*")
+
+
 class DeleteCategoryRequestSerializer(serializers.Serializer):
     id = serializers.UUIDField()

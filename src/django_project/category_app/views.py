@@ -31,6 +31,8 @@ from src.django_project.category_app.serializers import (
     CreateCategoryResponseSerializer,
     DeleteCategoryRequestSerializer,
     ListCategoryResponseSerializer,
+    PartialUpdateCategoryRequestSerializer,
+    PartialUpdateCategoryResponseSerializer,
     RetrieveCategoryRequestSerializer,
     RetrieveCategoryResponseSerializer,
     UpdateCategoryRequestSerializer,
@@ -101,6 +103,26 @@ class CategoryViewSet(viewsets.ViewSet):
         return Response(
             status=status.HTTP_200_OK,
             data=UpdateCategoryResponseSerializer(output).data,
+        )
+
+    def partial_update(self, request: Request, pk=None) -> Response:
+        serializer = PartialUpdateCategoryRequestSerializer(
+            data={
+                **request.data,
+                "id": pk,
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        repository = DjangoORMCategoryRepository()
+        use_case = UpdateCategory(repository)
+        input = UpdateCategoryInput(**serializer.validated_data)
+        try:
+            output = use_case.execute(input)
+        except CategoryNotFoundException as e:
+            return Response({"detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            PartialUpdateCategoryResponseSerializer(output).data,
+            status=status.HTTP_200_OK,
         )
 
     def destroy(self, request: Request, pk=None) -> Response:
