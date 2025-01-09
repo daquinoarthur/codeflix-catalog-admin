@@ -243,6 +243,52 @@ class TestUpdateCategoryAPI(CommonTestFixtures):
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
+class TestPartialUpdateCategoryAPI(CommonTestFixtures):
+    def test_partial_update_when_payload_is_invalid_returns_400(
+        self,
+        client: APIClient,
+        create_category,
+    ):
+        category = create_category(
+            name="Movies",
+            description="Movies category",
+        )
+        category_path = f"/api/categories/{category.id}/"
+        payload = {
+            "name": "",
+        }
+        response = client.patch(path=category_path, data=payload, format="json")
+        assert response.data == {
+            "name": [ErrorDetail(string="This field may not be blank.", code="blank")]
+        }
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_partial_update_when_payload_is_valid_returns_200(
+        self,
+        client: APIClient,
+        create_category,
+    ):
+        category = create_category(
+            name="Movies",
+            description="Movies category",
+        )
+        category_path = f"/api/categories/{category.id}/"
+        payload = {
+            "name": "Movies updated",
+        }
+        response = client.patch(path=category_path, data=payload, format="json")
+        expected_response = {
+            "data": {
+                "id": str(category.id),
+                "name": "Movies updated",
+                "description": "Movies category",
+                "is_active": True,
+            }
+        }
+        assert response.data == expected_response
+        assert response.status_code == status.HTTP_200_OK
+
+
 class TestDeleteCategoryAPI(CommonTestFixtures):
     def test_delete_category_when_id_is_not_a_valid_uuid(self, client: APIClient):
         category_path = "/api/categories/invalid-uuid/"
