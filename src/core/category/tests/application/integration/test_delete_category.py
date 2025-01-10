@@ -1,6 +1,12 @@
-from src.core.category.application.use_cases.delete_category import DeleteCategory, DeleteCategoryInput
+from src.core.category.application.use_cases.delete_category import (
+    DeleteCategory,
+    DeleteCategoryInput,
+    DeleteCategoryOutput,
+)
 from src.core.category.domain.category import Category
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
+from src.core.category.infra.in_memory_category_repository import (
+    InMemoryCategoryRepository,
+)
 
 
 class TestDeleteCategory:
@@ -17,4 +23,4 @@ class TestDeleteCategory:
         response = use_case.execute(request)
         assert repository.get_by_id(category_filme.id) is None
         assert len(repository.categories) == 1
-        assert response is None
+        assert response == DeleteCategoryOutput(detail="Category deleted successfully.")
