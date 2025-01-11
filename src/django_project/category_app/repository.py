@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from django_project.category_app.models import Category as CategoryModel
+from src.django_project.category_app.models import Category as CategoryModel
 from src.core.category.domain.category import Category
 from src.core.category.domain.category_repository import CategoryRepository
 
