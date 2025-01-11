@@ -19,8 +19,8 @@ class ListGenre:
     class Output:
         data: list[GenreData]
 
-    def __init__(self, genre_repository: GenreRepository):
-        self.genre_repository = genre_repository
+    def __init__(self, repository: GenreRepository):
+        self.genre_repository = repository
 
     def execute(self, input: Input) -> Output:
         genres = self.genre_repository.list()
