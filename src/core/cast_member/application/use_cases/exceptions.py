@@ -1,0 +1,2 @@
+class InvalidCastMemberDataException(Exception):
+    pass
