@@ -1,2 +1,4 @@
-class InvalidCastMemberDataException(Exception):
-    pass
+class InvalidCastMemberDataException(Exception): ...
+
+
+class CastMemberNotFoundException(Exception): ...
