@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from src.core.cast_member.domain.cast_member import CastMember
+from src.core.cast_member.domain.cast_member import CastMember, CastMemberType
 from src.core.cast_member.domain.cast_member_repository import CastMemberRepository
 from src.django_project.cast_member_app.models import CastMember as CastMemberModel
 
@@ -13,12 +13,12 @@ class DjangoORMCastMemberRepository(CastMemberRepository):
         created_cast_member = self.cast_member_model.objects.create(
             id=cast_member.id,
             name=cast_member.name,
-            type=cast_member.type,
+            type=cast_member.type.value,
         )
         return CastMember(
             id=created_cast_member.id,
             name=created_cast_member.name,
-            type=created_cast_member.type,
+            type=CastMemberType[created_cast_member.type],
         )
 
     def get_by_id(self, id: UUID) -> CastMember | None:
@@ -29,7 +29,7 @@ class DjangoORMCastMemberRepository(CastMemberRepository):
         return CastMember(
             id=cast_member.id,
             name=cast_member.name,
-            type=cast_member.type,
+            type=CastMemberType[cast_member.type],
         )
 
     def delete(self, id: UUID) -> None:
@@ -40,7 +40,7 @@ class DjangoORMCastMemberRepository(CastMemberRepository):
             CastMember(
                 id=cast_member.id,
                 name=cast_member.name,
-                type=cast_member.type,
+                type=CastMemberType[cast_member.type],
             )
             for cast_member in self.cast_member_model.objects.all()
         ]
@@ -54,7 +54,7 @@ class DjangoORMCastMemberRepository(CastMemberRepository):
             )
             update_fields = {
                 "name": cast_member.name,
-                "type": cast_member.type,
+                "type": cast_member.type.value,
             }
             self.cast_member_model.objects.filter(id=cast_member.id).update(
                 **update_fields
@@ -63,7 +63,7 @@ class DjangoORMCastMemberRepository(CastMemberRepository):
             return CastMember(
                 id=persisted_cast_member.id,
                 name=persisted_cast_member.name,
-                type=persisted_cast_member.type,
+                type=CastMemberType[persisted_cast_member.type],
             )
         except self.cast_member_model.DoesNotExist:
             return None
