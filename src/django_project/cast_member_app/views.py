@@ -2,11 +2,18 @@ from rest_framework import status, viewsets
 from rest_framework.views import Request, Response
 
 from src.django_project.cast_member_app.repository import DjangoORMCastMemberRepository
-from src.core.cast_member.application.use_cases.list_cast_members import (
-    ListCastMember,
+from src.core.cast_member.application.use_cases.list_cast_members import ListCastMember
+
+from src.core.cast_member.application.use_cases.exceptions import (
+    InvalidCastMemberDataException,
+)
+from src.core.cast_member.application.use_cases.create_cast_member import (
+    CreateCastMember,
 )
 from src.django_project.cast_member_app.serializers import (
     ListCastMemberResponseSerializer,
+    CreateCastMemberRequestSerializer,
+    CreateCastMemberResponseSerializer,
 )
 
 
@@ -19,3 +26,18 @@ class CastMemberViewSet(viewsets.ViewSet):
         output = use_case.execute(input)
         response_serializer = ListCastMemberResponseSerializer(output)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request: Request) -> Response:
+        repository = DjangoORMCastMemberRepository()
+        use_case = CreateCastMember(repository=repository)
+        request_serializer = CreateCastMemberRequestSerializer(data=request.data)
+        request_serializer.is_valid(raise_exception=True)
+        input = CreateCastMember.Input(**request_serializer.validated_data)
+        try:
+            output = use_case.execute(input)
+        except InvalidCastMemberDataException as err:
+            return Response(
+                data={"error": str(err)}, status=status.HTTP_400_BAD_REQUEST
+            )
+        response_serializer = CreateCastMemberResponseSerializer(instance=output)
+        return Response(data=response_serializer.data, status=status.HTTP_201_CREATED)
