@@ -19,9 +19,18 @@ class CastMemberTypeField(serializers.ChoiceField):
 
 class CastMemberSerializer(serializers.Serializer):
     id = serializers.UUIDField()
-    name = serializers.CharField()
+    name = serializers.CharField(max_length=100)
     type = CastMemberTypeField()
 
 
 class ListCastMemberResponseSerializer(serializers.Serializer):
     data = CastMemberSerializer(many=True)
+
+class CreateCastMemberRequestSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    type = CastMemberTypeField()
+
+class CreateCastMemberResponseSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField(max_length=100)
+    type = CastMemberTypeField()
