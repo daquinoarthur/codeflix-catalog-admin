@@ -19,6 +19,8 @@ from src.django_project.cast_member_app.serializers import (
     CreateCastMemberRequestSerializer,
     CreateCastMemberResponseSerializer,
     ListCastMemberResponseSerializer,
+    PartialUpdateCastMemberRequestSerializer,
+    PartialUpdateCastMemberResponseSerializer,
     UpdateCastMemberRequestSerializer,
     UpdateCastMemberResponseSerializer,
 )
@@ -60,6 +62,27 @@ class CastMemberViewSet(viewsets.ViewSet):
         try:
             output = use_case.execute(input)
             response_serializer = UpdateCastMemberResponseSerializer(instance=output)
+            return Response(data=response_serializer.data, status=status.HTTP_200_OK)
+        except InvalidCastMemberDataException as err:
+            return Response(
+                data={"error": str(err)}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except CastMemberNotFoundException as err:
+            return Response(data={"error": str(err)}, status=status.HTTP_404_NOT_FOUND)
+
+    def partial_update(self, request: Request, pk: UUID) -> Response:
+        request_serializers = PartialUpdateCastMemberRequestSerializer(
+            data={**request.data, "id": pk}
+        )
+        request_serializers.is_valid(raise_exception=True)
+        repository = DjangoORMCastMemberRepository()
+        use_case = UpdateCastMember(repository=repository)
+        input = UpdateCastMember.Input(**request_serializers.validated_data)
+        try:
+            output = use_case.execute(input)
+            response_serializer = PartialUpdateCastMemberResponseSerializer(
+                instance=output
+            )
             return Response(data=response_serializer.data, status=status.HTTP_200_OK)
         except InvalidCastMemberDataException as err:
             return Response(
