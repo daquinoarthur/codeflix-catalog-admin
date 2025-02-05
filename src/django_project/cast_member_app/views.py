@@ -14,10 +14,15 @@ from src.core.cast_member.application.use_cases.list_cast_members import ListCas
 from src.core.cast_member.application.use_cases.update_cast_member import (
     UpdateCastMember,
 )
+from src.core.cast_member.application.use_cases.delete_cast_member import (
+    DeleteCastMember,
+)
 from src.django_project.cast_member_app.repository import DjangoORMCastMemberRepository
 from src.django_project.cast_member_app.serializers import (
     CreateCastMemberRequestSerializer,
     CreateCastMemberResponseSerializer,
+    DeleteCastMemberRequestSerializer,
+    DeleteCastMemberResponseSerializer,
     ListCastMemberResponseSerializer,
     PartialUpdateCastMemberRequestSerializer,
     PartialUpdateCastMemberResponseSerializer,
@@ -87,6 +92,21 @@ class CastMemberViewSet(viewsets.ViewSet):
         except InvalidCastMemberDataException as err:
             return Response(
                 data={"error": str(err)}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except CastMemberNotFoundException as err:
+            return Response(data={"error": str(err)}, status=status.HTTP_404_NOT_FOUND)
+
+    def destroy(self, request: Request, pk: UUID) -> Response:
+        request_serializer = DeleteCastMemberRequestSerializer(data={"id": pk})
+        request_serializer.is_valid(raise_exception=True)
+        repository = DjangoORMCastMemberRepository()
+        use_case = DeleteCastMember(repository=repository)
+        input = DeleteCastMember.Input(**request_serializer.validated_data)
+        try:
+            output = use_case.execute(input)
+            response_serializer = DeleteCastMemberResponseSerializer(instance=output)
+            return Response(
+                data=response_serializer.data, status=status.HTTP_204_NO_CONTENT
             )
         except CastMemberNotFoundException as err:
             return Response(data={"error": str(err)}, status=status.HTTP_404_NOT_FOUND)
