@@ -60,3 +60,11 @@ class PartialUpdateCastMemberResponseSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     name = serializers.CharField(max_length=100)
     type = CastMemberTypeField()
+
+
+class DeleteCastMemberRequestSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+
+
+class DeleteCastMemberResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField()
