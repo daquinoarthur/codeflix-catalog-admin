@@ -1,19 +1,26 @@
+from uuid import UUID
+
 from rest_framework import status, viewsets
 from rest_framework.views import Request, Response
 
-from src.django_project.cast_member_app.repository import DjangoORMCastMemberRepository
-from src.core.cast_member.application.use_cases.list_cast_members import ListCastMember
-
-from src.core.cast_member.application.use_cases.exceptions import (
-    InvalidCastMemberDataException,
-)
 from src.core.cast_member.application.use_cases.create_cast_member import (
     CreateCastMember,
 )
+from src.core.cast_member.application.use_cases.exceptions import (
+    CastMemberNotFoundException,
+    InvalidCastMemberDataException,
+)
+from src.core.cast_member.application.use_cases.list_cast_members import ListCastMember
+from src.core.cast_member.application.use_cases.update_cast_member import (
+    UpdateCastMember,
+)
+from src.django_project.cast_member_app.repository import DjangoORMCastMemberRepository
 from src.django_project.cast_member_app.serializers import (
-    ListCastMemberResponseSerializer,
     CreateCastMemberRequestSerializer,
     CreateCastMemberResponseSerializer,
+    ListCastMemberResponseSerializer,
+    UpdateCastMemberRequestSerializer,
+    UpdateCastMemberResponseSerializer,
 )
 
 
@@ -41,3 +48,22 @@ class CastMemberViewSet(viewsets.ViewSet):
             )
         response_serializer = CreateCastMemberResponseSerializer(instance=output)
         return Response(data=response_serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request: Request, pk: UUID) -> Response:
+        request_serializers = UpdateCastMemberRequestSerializer(
+            data={**request.data, "id": pk}
+        )
+        request_serializers.is_valid(raise_exception=True)
+        repository = DjangoORMCastMemberRepository()
+        use_case = UpdateCastMember(repository=repository)
+        input = UpdateCastMember.Input(**request_serializers.validated_data)
+        try:
+            output = use_case.execute(input)
+            response_serializer = UpdateCastMemberResponseSerializer(instance=output)
+            return Response(data=response_serializer.data, status=status.HTTP_200_OK)
+        except InvalidCastMemberDataException as err:
+            return Response(
+                data={"error": str(err)}, status=status.HTTP_400_BAD_REQUEST
+            )
+        except CastMemberNotFoundException as err:
+            return Response(data={"error": str(err)}, status=status.HTTP_404_NOT_FOUND)
