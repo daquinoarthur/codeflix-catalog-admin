@@ -265,3 +265,41 @@ class TestCastMemberViewSetPartialUpdateAPI(CommonTestFixtures):
             ]
         }
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+class TestCastMemberViewSetDeleteAPI(CommonTestFixtures):
+    def test_delete_cast_member(
+        self,
+        client,
+        create_cast_member,
+        cast_member_repository,
+    ):
+        cast_member = create_cast_member("Actor", CastMemberType.ACTOR)
+        cast_member_path = f"/api/cast-members/{cast_member.id}/"
+        response = client.delete(cast_member_path)
+        assert response.data == {"detail": "Cast member deleted successfully"}
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert len(cast_member_repository.list()) == 0
+
+    def test_try_to_delete_non_existent_cast_member(
+        self,
+        client,
+    ):
+        non_existing_cast_member_id = uuid4()
+        cast_member_path = f"/api/cast-members/{non_existing_cast_member_id}/"
+        response = client.delete(cast_member_path)
+        assert response.data == {
+            "error": f"Cast member with id {non_existing_cast_member_id} not found"
+        }
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_try_to_delete_cast_member_with_invalid_id_field(
+        self,
+        client,
+    ):
+        cast_member_path = f"/api/cast-members/invalid_id/"
+        response = client.delete(cast_member_path)
+        assert response.data == {
+            "id": [ErrorDetail(string="Must be a valid UUID.", code="invalid")]
+        }
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
