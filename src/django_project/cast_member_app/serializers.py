@@ -26,11 +26,25 @@ class CastMemberSerializer(serializers.Serializer):
 class ListCastMemberResponseSerializer(serializers.Serializer):
     data = CastMemberSerializer(many=True)
 
+
 class CreateCastMemberRequestSerializer(serializers.Serializer):
     name = serializers.CharField()
     type = CastMemberTypeField()
 
+
 class CreateCastMemberResponseSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField(max_length=100)
+    type = CastMemberTypeField()
+
+
+class UpdateCastMemberRequestSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    type = CastMemberTypeField()
+
+
+class UpdateCastMemberResponseSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     name = serializers.CharField(max_length=100)
     type = CastMemberTypeField()
