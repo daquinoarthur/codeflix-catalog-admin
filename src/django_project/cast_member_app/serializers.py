@@ -48,3 +48,15 @@ class UpdateCastMemberResponseSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     name = serializers.CharField(max_length=100)
     type = CastMemberTypeField()
+
+
+class PartialUpdateCastMemberRequestSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField(required=False)
+    type = CastMemberTypeField(required=False)
+
+
+class PartialUpdateCastMemberResponseSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField(max_length=100)
+    type = CastMemberTypeField()
