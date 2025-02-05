@@ -185,3 +185,83 @@ class TestCastMemberViewSetUpdateAPI(CommonTestFixtures):
             "id": [ErrorDetail(string="Must be a valid UUID.", code="invalid")]
         }
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+class TestCastMemberViewSetPartialUpdateAPI(CommonTestFixtures):
+    def test_cast_member_partial_update(
+        self,
+        client,
+        create_cast_member,
+        cast_member_repository,
+    ):
+        cast_member = create_cast_member("Actor", CastMemberType.ACTOR)
+        cast_member_path = f"/api/cast-members/{cast_member.id}/"
+        payload = {"name": "Director"}
+        response = client.patch(cast_member_path, payload, format="json")
+        updated_cast_member = cast_member_repository.get_by_id(cast_member.id)
+        expected_response = {
+            "id": str(updated_cast_member.id),
+            "name": updated_cast_member.name,
+            "type": updated_cast_member.type.value,
+        }
+        assert response.data == expected_response
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_try_to_partial_update_non_existent_cast_member(
+        self,
+        client,
+    ):
+        non_existing_cast_member_id = uuid4()
+        cast_member_path = f"/api/cast-members/{non_existing_cast_member_id}/"
+        payload = {"name": "Director"}
+        response = client.patch(cast_member_path, payload, format="json")
+        assert response.data == {
+            "error": f"Can not update cast member with id: {non_existing_cast_member_id}. Cast member not found."
+        }
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_try_to_partial_update_cast_member_with_invalid_name_field(
+        self,
+        client,
+        create_cast_member,
+    ):
+        cast_member = create_cast_member("Actor", CastMemberType.ACTOR)
+        cast_member_path = f"/api/cast-members/{cast_member.id}/"
+        payload = {"name": ""}
+        response = client.patch(cast_member_path, payload, format="json")
+        assert response.data == {
+            "name": [ErrorDetail(string="This field may not be blank.", code="blank")]
+        }
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_try_to_partial_update_cast_member_with_invalid_id_field(
+        self,
+        client,
+        create_cast_member,
+    ):
+        cast_member = create_cast_member("Actor", CastMemberType.ACTOR)
+        cast_member_path = f"/api/cast-members/invalid_id/"
+        payload = {"name": "Director"}
+        response = client.patch(cast_member_path, payload, format="json")
+        assert response.data == {
+            "id": [ErrorDetail(string="Must be a valid UUID.", code="invalid")]
+        }
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_try_to_partial_update_cast_member_with_invalid_type_field(
+        self,
+        client,
+        create_cast_member,
+    ):
+        cast_member = create_cast_member("Actor", CastMemberType.ACTOR)
+        cast_member_path = f"/api/cast-members/{cast_member.id}/"
+        payload = {"type": "INVALID"}
+        response = client.patch(cast_member_path, payload, format="json")
+        assert response.data == {
+            "type": [
+                ErrorDetail(
+                    string='"INVALID" is not a valid choice.', code="invalid_choice"
+                )
+            ]
+        }
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
