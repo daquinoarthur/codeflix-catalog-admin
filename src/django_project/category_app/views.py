@@ -14,7 +14,6 @@ from src.core.category.application.use_cases.get_category import (
 )
 from src.core.category.application.use_cases.list_category import (
     ListCategory,
-    ListCategoryInput,
 )
 from src.core.category.application.use_cases.update_category import (
     UpdateCategory,
@@ -24,7 +23,6 @@ from src.core.category.application.use_cases.delete_category import (
     DeleteCategory,
     DeleteCategoryInput,
 )
-from src.django_project.category_app import repository
 from src.django_project.category_app.repository import DjangoORMCategoryRepository
 from src.django_project.category_app.serializers import (
     CreateCategoryRequestSerializer,
@@ -43,7 +41,8 @@ from src.django_project.category_app.serializers import (
 # Create your views here.
 class CategoryViewSet(viewsets.ViewSet):
     def list(self, request: Request) -> Response:
-        input = ListCategoryInput()
+        order_by = request.query_params.get("order_by", "name")
+        input = ListCategory.Input(order_by=order_by)
         repository = DjangoORMCategoryRepository()
         use_case = ListCategory(repository)
         output = use_case.execute(input)
