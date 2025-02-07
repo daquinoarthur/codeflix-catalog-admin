@@ -1,21 +1,21 @@
 from src.core.category.application.use_cases.list_category import (
     CategoryOutput,
     ListCategory,
-    ListCategoryInput,
-    ListCategoryOutput,
 )
 from src.core.category.domain.category import Category
-from src.core.category.infra.in_memory_category_repository import InMemoryCategoryRepository
+from src.core.category.infra.in_memory_category_repository import (
+    InMemoryCategoryRepository,
+)
 
 
 class TestListCategory:
     def test_return_empty_list(self):
         repository = InMemoryCategoryRepository()
         use_case = ListCategory(repository)
-        request = ListCategoryInput()
+        request = ListCategory.Input()
         response = use_case.execute(request)
         if response:
-            assert response == ListCategoryOutput(data=[])
+            assert response == ListCategory.Output(data=[])
 
     def test_return_existing_categories(self):
         category_filme = Category(
@@ -30,10 +30,10 @@ class TestListCategory:
         repository.save(category_filme)
         repository.save(category_serie)
         use_case = ListCategory(repository)
-        request = ListCategoryInput()
+        request = ListCategory.Input()
         response = use_case.execute(request)
         if response:
-            assert response == ListCategoryOutput(
+            assert response == ListCategory.Output(
                 data=[
                     CategoryOutput(
                         id=category_filme.id,
