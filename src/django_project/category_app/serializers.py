@@ -14,8 +14,16 @@ class CreateCategoryRequestSerializer(serializers.Serializer):
     is_active = serializers.BooleanField(default=True)
 
 
+class ListCategoryMetaSerializer(serializers.Serializer):
+    current_page = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+    total_items = serializers.IntegerField()
+    total_pages = serializers.IntegerField()
+
+
 class ListCategoryResponseSerializer(serializers.Serializer):
     data = CategorySerializer(many=True)
+    meta = ListCategoryMetaSerializer()
 
 
 class RetrieveCategoryRequestSerializer(serializers.Serializer):
