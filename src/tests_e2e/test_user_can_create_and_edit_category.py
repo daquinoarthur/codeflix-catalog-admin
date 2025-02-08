@@ -12,7 +12,15 @@ class TestUserCanCreateAndEditCategory:
     def test_user_can_create_and_edit_category(self, client):
         # Assert that list is emtpy
         list_response = client.get("/api/categories/")
-        assert list_response.data == {"data": []}
+        assert list_response.data == {
+            "data": [],
+            "meta": {
+                "current_page": 1,
+                "page_size": 2,
+                "total_items": 0,
+                "total_pages": 0,
+            },
+        }
         # Assert that the use can create a category
         create_response = client.post(
             "/api/categories/",
@@ -41,7 +49,13 @@ class TestUserCanCreateAndEditCategory:
                     "description": "Movie description",
                     "is_active": True,
                 }
-            ]
+            ],
+            "meta": {
+                "current_page": 1,
+                "page_size": 2,
+                "total_items": 1,
+                "total_pages": 1,
+            },
         }
         assert len(list_response.data["data"]) == 1
         # Assert that the user can edit the category
@@ -72,5 +86,11 @@ class TestUserCanCreateAndEditCategory:
                     "description": "Movie description updated",
                     "is_active": True,
                 }
-            ]
+            ],
+            "meta": {
+                "current_page": 1,
+                "page_size": 2,
+                "total_items": 1,
+                "total_pages": 1,
+            },
         }

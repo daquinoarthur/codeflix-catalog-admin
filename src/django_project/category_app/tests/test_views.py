@@ -58,7 +58,13 @@ class TestListCategoriesAPI(CommonTestFixtures):
                     "description": category_movies.description,
                     "is_active": category_movies.is_active,
                 },
-            ]
+            ],
+            "meta": {
+                "current_page": 1,
+                "page_size": 2,
+                "total_items": 2,
+                "total_pages": 1,
+            },
         }
         assert response.data == expected_response
         assert response.status_code == status.HTTP_200_OK
@@ -83,7 +89,15 @@ class TestListCategoriesAPI(CommonTestFixtures):
         category_path = "/api/categories/"
         response = client.get(path=category_path)
 
-        assert response.data == {"data": []}
+        assert response.data == {
+            "data": [],
+            "meta": {
+                "current_page": 1,
+                "page_size": 2,
+                "total_items": 0,
+                "total_pages": 0,
+            },
+        }
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data["data"]) == 0
 
