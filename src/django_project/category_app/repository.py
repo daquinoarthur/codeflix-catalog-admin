@@ -12,7 +12,10 @@ class DjangoORMCategoryRepository(CategoryRepository):
         self.category_model = category_model or CategoryModel
 
     def save(self, category: Category) -> Category:
-        category_model = CategoryModelMapper.from_entity_to_model(category)
+        category_model = CategoryModelMapper.from_entity_to_model(
+            category,
+            self.category_model,
+        )
         category_model.save()
         return CategoryModelMapper.from_model_to_entity(category_model)
 
@@ -59,8 +62,8 @@ class DjangoORMCategoryRepository(CategoryRepository):
 
 class CategoryModelMapper:
     @staticmethod
-    def from_entity_to_model(category: Category) -> CategoryModel:
-        return CategoryModel(
+    def from_entity_to_model(category: Category, category_model) -> CategoryModel:
+        return category_model(
             id=category.id,
             name=category.name,
             description=category.description,
