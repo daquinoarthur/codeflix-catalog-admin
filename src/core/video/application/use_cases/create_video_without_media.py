@@ -3,14 +3,8 @@ from decimal import Decimal
 from uuid import UUID
 
 from src.core._shared.notification import Notification
-from src.core.cast_member.application.use_cases.exceptions import (
-    CastMemberNotFoundException,
-)
 from src.core.cast_member.domain.cast_member_repository import CastMemberRepository
-from src.core.category.application.use_cases.exceptions import CategoryNotFoundException
 from src.core.category.domain.category_repository import CategoryRepository
-from src.core.video.domain.video_repository import VideoRepository
-from src.core.genre.application.exceptions import GenreNotFoundException
 from src.core.genre.domain.genre_repository import GenreRepository
 from src.core.video.application.use_cases.exceptions import (
     InvalidVideoDataException,
@@ -18,10 +12,11 @@ from src.core.video.application.use_cases.exceptions import (
 )
 from src.core.video.domain.value_objects import Rating
 from src.core.video.domain.video import Video
+from src.core.video.domain.video_repository import VideoRepository
 
 
 @dataclass
-class CreateViewWithoutMedia:
+class CreateVideoWithoutMedia:
     @dataclass
     class Input:
         title: str
@@ -35,6 +30,7 @@ class CreateViewWithoutMedia:
 
     @dataclass
     class Output:
+        id: UUID
         title: str
         description: str
         launch_year: int
@@ -77,17 +73,20 @@ class CreateViewWithoutMedia:
             )
         except ValueError as e:
             raise InvalidVideoDataException(str(e))
-        persisted_video = self.repository.create(video)
+        persisted_video = self.repository.save(video)
         return self.Output(
+            id=persisted_video.id,
             title=persisted_video.title,
             description=persisted_video.description,
             launch_year=persisted_video.launch_year,
             duration=persisted_video.duration,
             published=persisted_video.published,
             rating=persisted_video.rating,
-            categories=persisted_video.categories,
-            genres=persisted_video.genres,
-            cast_members=persisted_video.cast_members,
+            categories={category.id for category in persisted_video.categories.all()},
+            genres={genre.id for genre in persisted_video.genres.all()},
+            cast_members={
+                cast_member.id for cast_member in persisted_video.cast_members.all()
+            },
         )
 
     def _validate_categories(self, input: Input, notification: Notification):
